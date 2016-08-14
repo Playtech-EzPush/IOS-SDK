@@ -14,8 +14,8 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EB38108E1D59F38F00B927F7"
-               BuildableName = "libEzPush.a"
+               BlueprintIdentifier = "EB3811B31D5CB2E600B927F7"
+               BuildableName = "EzPush.framework"
                BlueprintName = "EzPush"
                ReferencedContainer = "container:EzPush.xcodeproj">
             </BuildableReference>
@@ -45,8 +45,8 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "EB38108E1D59F38F00B927F7"
-            BuildableName = "libEzPush.a"
+            BlueprintIdentifier = "EB3811B31D5CB2E600B927F7"
+            BuildableName = "EzPush.framework"
             BlueprintName = "EzPush"
             ReferencedContainer = "container:EzPush.xcodeproj">
          </BuildableReference>
@@ -63,8 +63,8 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "EB38108E1D59F38F00B927F7"
-            BuildableName = "libEzPush.a"
+            BlueprintIdentifier = "EB3811B31D5CB2E600B927F7"
+            BuildableName = "EzPush.framework"
             BlueprintName = "EzPush"
             ReferencedContainer = "container:EzPush.xcodeproj">
          </BuildableReference>

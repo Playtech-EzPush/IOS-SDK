@@ -1252,17 +1252,17 @@ static const char CRLFCRLFBytes[] = {'\r', '\n', '\r', '\n'};
                     size_t scanSize = currentDataSize - _currentStringScanPosition;
                     
                     NSData *scan_data = [_currentFrameData subdataWithRange:NSMakeRange(_currentStringScanPosition, scanSize)];
-//                    int32_t valid_utf8_size = validate_dispatch_data_partial_string(scan_data);
-//                    
-//                    if (valid_utf8_size == -1) {
-//                        [self closeWithCode:SRStatusCodeInvalidUTF8 reason:@"Text frames must be valid UTF-8"];
-//                        dispatch_async(_workQueue, ^{
-//                            [self _disconnect];
-//                        });
-//                        return didWork;
-//                    } else {
-//                        _currentStringScanPosition += valid_utf8_size;
-//                    }
+                    int32_t valid_utf8_size = validate_dispatch_data_partial_string(scan_data);
+                    
+                    if (valid_utf8_size == -1) {
+                        [self closeWithCode:SRStatusCodeInvalidUTF8 reason:@"Text frames must be valid UTF-8"];
+                        dispatch_async(_workQueue, ^{
+                            [self _disconnect];
+                        });
+                        return didWork;
+                    } else {
+                        _currentStringScanPosition += valid_utf8_size;
+                    }
                 }
                 
             }

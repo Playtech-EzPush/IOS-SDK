@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EB3810CA1D59F85C00B927F7"
+               BlueprintIdentifier = "EB3811FF1D60544F00B927F7"
                BuildableName = "Framework"
                BlueprintName = "Framework"
                ReferencedContainer = "container:EzPush.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "EB3810CA1D59F85C00B927F7"
+            BlueprintIdentifier = "EB3811FF1D60544F00B927F7"
             BuildableName = "Framework"
             BlueprintName = "Framework"
             ReferencedContainer = "container:EzPush.xcodeproj">
@@ -63,7 +63,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "EB3810CA1D59F85C00B927F7"
+            BlueprintIdentifier = "EB3811FF1D60544F00B927F7"
             BuildableName = "Framework"
             BlueprintName = "Framework"
             ReferencedContainer = "container:EzPush.xcodeproj">

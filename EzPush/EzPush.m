@@ -21,7 +21,9 @@
 
 //#define applicationId @"<YOUR_APPLICATION_ID>"
 
-@interface EzPush ()<SocketIODelegate>
+@interface EzPush ()<SocketIODelegate>{
+    SocketIO *socketIO;
+}
 
 //WEB SOCKET METHODS
 - (void) socketIODidConnect:(SocketIO *)socket;
@@ -32,7 +34,7 @@
 - (void) socketIO:(SocketIO *)socket didSendMessage:(SocketIOPacket *)packet;
 - (void) socketIO:(SocketIO *)socket onError:(NSError *)error;
 
-@property (nonatomic,strong) SocketIO       *socketIO;
+//@property (nonatomic,strong) SocketIO       *socketIO;
 
 @property(assign)            BOOL           enableLog;
 
@@ -54,27 +56,86 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedMyManager = [[self alloc] init];
-        NSLog(@"init once");
+        NSLog(@"EzPush init once.");
     });
     return sharedMyManager;
 }
 
 - (id)init {
+    
+    /*
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didBecomeActiveNotification)
+                                                 name:UIApplicationDidBecomeActiveNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didBecomeActiveNotification)
+                                                 name:UIApplicationWillResignActiveNotification object:nil];*/
     return self;
 }
 
+- (void)dealloc {
+    // Should never be called, but just here for clarity really.
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationDidBecomeActiveNotification
+                                                  object:nil];
+}
 
+- (void)didBecomeActiveNotification{
+    NSLog(@"Ezpush UIApplicationDidBecomeActiveNotification");
+    [socketIO disconnectForced];
+}
 + (void)didAcceptLocalNotification:(UILocalNotification*)notification application:(UIApplication*)application
 {
     //TODO;
 }
++ (void)EzPushApplication:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    if ( application.applicationState == UIApplicationStateInactive || application.applicationState == UIApplicationStateBackground  )
+    {
+        EzPush *anInstance = [EzPush sharedManager];
+        
+        if([EzPush enableDebugLogs]){
+            NSLog(@"didReceiveRemoteNotification = %@",userInfo);
+        }
+        
+        if (userInfo[@"nid"]) {
+            NSString *json =  [NSString stringWithFormat:@"{\"qualifier\":\"pt.openapi.push/notificationOpened/1.0\",\"contextId\":\"%@\",\"data\":{\"hwid\":\"%@\",\"applicationId\":\"%@\",\"notificationId\":\"%@\"}}",anInstance.contextId,[anInstance stringFromDeviceToken],anInstance.applicationId,userInfo[@"nid"]];
+            
+            //opened from a push notification when the app was on background
+            [anInstance->socketIO sendMessage:json];
+        }
+        
+       
+        
+    }
+}
 
+- (void)connectToServer{
+    
+    socketIO = [[SocketIO alloc] initWithDelegate:self];
+    socketIO.useSecure = socketSecure;
+    [socketIO connectToHost:socketHost onPort:socketPort];
+    
+    
+    SocketIOCallback cb = ^(id argsData) {
+        NSDictionary *response = argsData;
+        NSLog(@"%@",response);
+        // do something with response
+    };
+    
+   // NSDictionary *json = @{@"qualifier": @"pt.openapi.context/createContextRequest", @"data": @{@"properties":@"null"}};
+    
+    [socketIO sendMessage:@"{\"qualifier\":\"pt.openapi.context/createContextRequest\",\"data\":{\"properties\":null}}" withAcknowledge:cb];
+
+}
 
 + (void)initWithLaunchOptions:(NSDictionary*)launchOptions appId:(NSString*)appId{
     
     EzPush *anInstance = [EzPush sharedManager];
     anInstance.applicationId = appId;
     anInstance.launchOptions = launchOptions;
+
 }
 
 -(void)processRemoteNotification:(NSDictionary *)userInfo {
@@ -122,12 +183,12 @@
         if([EzPush enableDebugLogs])
             NSLog(@"I have token, I can start connection");
         
-        _socketIO = [[SocketIO alloc] initWithDelegate:self];
-        _socketIO.useSecure = socketSecure;
-        [_socketIO connectToHost:socketHost onPort:socketPort];
+        socketIO = [[SocketIO alloc] initWithDelegate:self];
+        socketIO.useSecure = socketSecure;
+        [socketIO connectToHost:socketHost onPort:socketPort];
         
         //need to get context
-        [_socketIO sendMessage:@"{\"qualifier\":\"pt.openapi.context/createContextRequest\",\"data\":{\"properties\":null}}"];
+        [socketIO sendMessage:@"{\"qualifier\":\"pt.openapi.context/createContextRequest\",\"data\":{\"properties\":null}}"];
     } else {
         if([EzPush enableDebugLogs])
             NSLog(@"I don't have token /:");
@@ -135,7 +196,7 @@
 }
 
 -(void) registerDeviceForPush {
-    [_socketIO sendMessage:[NSString stringWithFormat:@"{\"qualifier\":\"pt.openapi.push.devreg/registerDevice/1.0\",\"contextId\":\"%@\",\"data\":{\"_id\":{\"hwid\":\"%@\",\"applicationId\":\"%@\"},\"pushToken\":\"%@\",\"language\":\"en\",\"platform\":1,\"timeZone\":7200}}",_contextId, [self stringFromDeviceToken],_applicationId,[self stringFromDeviceToken]]];
+    [socketIO sendMessage:[NSString stringWithFormat:@"{\"qualifier\":\"pt.openapi.push.devreg/registerDevice/1.0\",\"contextId\":\"%@\",\"data\":{\"_id\":{\"hwid\":\"%@\",\"applicationId\":\"%@\"},\"pushToken\":\"%@\",\"language\":\"en\",\"platform\":1,\"timeZone\":7200}}",_contextId, [self stringFromDeviceToken],_applicationId,[self stringFromDeviceToken]]];
 }
 
 +(void) registerUserName:(NSString*) username {
@@ -146,25 +207,65 @@
     if (oldUser && [oldUser isEqualToString:username]) {
         if([EzPush enableDebugLogs])
             NSLog(@"We already have this username: %@",username);
+        return;
     }
-    else if (anInstance.contextId) {
+    
+    if (anInstance->socketIO.isConnected) {
+        if (anInstance.contextId) {
+            if([EzPush enableDebugLogs])
+                NSLog(@"rEGISTERING uSERNAME");
+            
+            //it's new or different from what we have, so let's update ptech
+            anInstance.saveUser = username;
+            [anInstance->socketIO sendMessage:[NSString stringWithFormat:@"{\"qualifier\":\"pt.openapi.push.devreg/updateUserId\",\"contextId\":\"%@\",\"data\":{\"deviceRegistrationId\":{\"hwid\":\"%@\",\"applicationId\":\"%@\"},\"userIdentity\":\"%@\"}}",anInstance.contextId, [anInstance stringFromDeviceToken], anInstance.applicationId, username]];
+        }
+    }
+    
+    else {
         if([EzPush enableDebugLogs])
-            NSLog(@"rEGISTERING uSERNAME");
+            NSLog(@"socketIO NOT connected ... update tags");
         
-        //it's new or different from what we have, so let's update ptech
-        anInstance.saveUser = username;
-        [anInstance.socketIO sendMessage:[NSString stringWithFormat:@"{\"qualifier\":\"pt.openapi.push.devreg/updateUserId\",\"contextId\":\"%@\",\"data\":{\"deviceRegistrationId\":{\"hwid\":\"%@\",\"applicationId\":\"%@\"},\"userIdentity\":\"%@\"}}",anInstance.contextId, [anInstance stringFromDeviceToken], anInstance.applicationId, username]];
-    } else {
-        if([EzPush enableDebugLogs])
-            NSLog(@"Missing stuff, put in que");
-        
-        anInstance.queString = [NSString stringWithFormat:@"registerUserName:%@",username];
         [anInstance connectSocket];
+        
+        if (anInstance->socketIO.isConnected) {
+            if (anInstance.contextId) {
+                if([EzPush enableDebugLogs])
+                    NSLog(@"REGISTERING USERNAME");
+                
+                //it's new or different from what we have, so let's update ptech
+                anInstance.saveUser = username;
+                [anInstance->socketIO sendMessage:[NSString stringWithFormat:@"{\"qualifier\":\"pt.openapi.push.devreg/updateUserId\",\"contextId\":\"%@\",\"data\":{\"deviceRegistrationId\":{\"hwid\":\"%@\",\"applicationId\":\"%@\"},\"userIdentity\":\"%@\"}}",anInstance.contextId, [anInstance stringFromDeviceToken], anInstance.applicationId, username]];
+            }
+        }
+        //anInstance.queString = [NSString stringWithFormat:@"registerUserName:%@",username];
+        //[anInstance connectSocket];
     }
 }
 + (void)setGeoLocationLatitude : (float)latitude andLongitude:(float) longitude{
     EzPush *anInstance = [EzPush sharedManager];
-    [anInstance.socketIO sendMessage:[NSString stringWithFormat:@"{\"qualifier\":\"pt.openapi.push.devreg/updateLocation\",\"contextId\":\"%@\",\"data\":{\"hwid\":\"%@\",\"longitude\":%f,\"latitude\":%f}}",anInstance.contextId,[anInstance stringFromDeviceToken],longitude,latitude]];
+    
+    if (anInstance->socketIO.isConnected) {
+        if (anInstance.contextId) {
+            [anInstance->socketIO sendMessage:[NSString stringWithFormat:@"{\"qualifier\":\"pt.openapi.push.devreg/updateLocation\",\"contextId\":\"%@\",\"data\":{\"hwid\":\"%@\",\"longitude\":%f,\"latitude\":%f}}",anInstance.contextId,[anInstance stringFromDeviceToken],longitude,latitude]];
+        }
+    }
+    
+    else{
+        if([EzPush enableDebugLogs])
+            NSLog(@"socketIO NOT connected ... update tags");
+        
+        [anInstance connectSocket];
+        
+        
+        if (anInstance->socketIO.isConnected) {
+            if (anInstance.contextId) {
+                [anInstance->socketIO sendMessage:[NSString stringWithFormat:@"{\"qualifier\":\"pt.openapi.push.devreg/updateLocation\",\"contextId\":\"%@\",\"data\":{\"hwid\":\"%@\",\"longitude\":%f,\"latitude\":%f}}",anInstance.contextId,[anInstance stringFromDeviceToken],longitude,latitude]];
+            }
+        }
+        
+    }
+    
+    
 }
 
 + (void)updateTags : (NSArray*)tags{
@@ -172,7 +273,7 @@
     
     NSString *json = [anInstance jsonStringFromNSdictionary:tags];
     
-    if (anInstance.socketIO.isConnected) {
+    if (anInstance->socketIO.isConnected) {
         if (anInstance.contextId) {
             if([EzPush enableDebugLogs])
                 NSLog(@"socketIO connected ... update tags");
@@ -185,7 +286,7 @@
                 if([EzPush enableDebugLogs])
                     NSLog(@"Tags JSON == %@",jsonFormat);
                 
-                [anInstance.socketIO sendMessage:jsonFormat];
+                [anInstance->socketIO sendMessage:jsonFormat];
             }
         }
     }
@@ -198,14 +299,14 @@
         if([EzPush enableDebugLogs])
             NSLog(@"socketIO try to connected ... update tags");
         
-        if (anInstance.socketIO.isConnected) {
+        if (anInstance->socketIO.isConnected) {
             if (anInstance.contextId) {
                 
                 if([EzPush enableDebugLogs])
                     NSLog(@"socketIO connected ... update tags");
                 
                 if (json.length > 0) {
-                    [anInstance.socketIO sendMessage:[NSString stringWithFormat:@"{\"qualifier\":\"pt.openapi.push.devreg/updateTags\",\"contextId\":\"%@\",\"data\":{\"deviceRegistrationId\":{\"hwid\":\"%@\",\"applicationId\":\"%@\"},\"tags\":[{\"key\":\"casino\",\"value\":\"galaUpdated\"}]}}",anInstance.contextId,[anInstance stringFromDeviceToken],anInstance.applicationId]];
+                    [anInstance->socketIO sendMessage:[NSString stringWithFormat:@"{\"qualifier\":\"pt.openapi.push.devreg/updateTags\",\"contextId\":\"%@\",\"data\":{\"deviceRegistrationId\":{\"hwid\":\"%@\",\"applicationId\":\"%@\"},\"tags\":[{\"key\":\"casino\",\"value\":\"galaUpdated\"}]}}",anInstance.contextId,[anInstance stringFromDeviceToken],anInstance.applicationId]];
                 }
             }
         }
@@ -330,6 +431,36 @@
             [self executeQue];
         }
     }
+    
+    else if ([qualifier isEqualToString:@"pt.openapi.context/createContextRequest"]) {
+        id data = [json objectForKey:@"data"];
+        if ([data objectForKey:@"code"] == [NSNull null]) {
+            //no code?
+        }
+        else if ([[data objectForKey:@"code"] integerValue] == 0) {
+            //device successfuly registered, save token for future
+            if([EzPush enableDebugLogs])
+                NSLog(@"device successfuly createContextRequest");
+            
+            //let's check if something else needed
+            [self executeQue];
+        }
+    }
+    
+    else if ([qualifier isEqualToString:@"pt.openapi.push/notificationOpened"]) {
+        id data = [json objectForKey:@"data"];
+        if ([data objectForKey:@"code"] == [NSNull null]) {
+            //no code?
+        }
+        else if ([[data objectForKey:@"code"] integerValue] == 0) {
+            //device successfuly registered, save token for future
+            if([EzPush enableDebugLogs])
+                NSLog(@"device successfuly update notificationOpened");
+            
+            //let's check if something else needed
+            [self executeQue];
+        }
+    }
 }
 
 -(NSString*) jsonStringFromNSdictionary : (NSArray<EzPushTag *>*)ezpushTags{
@@ -365,7 +496,11 @@
     return @"";
 }
 
-
+- (NSString*)DictionaryToJSONString : (NSDictionary*)jsonDict{
+    NSData* jsonData = [NSJSONSerialization dataWithJSONObject:jsonDict options:0 error:nil];
+    NSString* jsonString = [[NSString alloc] initWithBytes:[jsonData bytes] length:[jsonData length] encoding:NSUTF8StringEncoding];
+    return jsonString;
+}
 + (void)enableDebugLogs : (BOOL)enable{
     EzPush *anInstance = [EzPush sharedManager];
     anInstance.enableLog = enable;
@@ -386,11 +521,15 @@
 - (void) socketIO:(SocketIO *)socket didSendMessage:(SocketIOPacket *)packet {
     
 }
-- (void) socketIO:(SocketIO *)socket onError:(NSError *)error{
-    if([EzPush enableDebugLogs])
-        NSLog(@"I have error: %@",[error debugDescription]);
-}
 
+- (void) socketIO:(SocketIO *)socket onError:(NSError *)error
+{
+    if ([error code] == SocketIOUnauthorized) {
+        NSLog(@"not authorized");
+    } else {
+        NSLog(@"onError() %@", error);
+    }
+}
 - (void)handleUrlOpen:(NSURL*)url {
     if([EzPush enableDebugLogs])
         NSLog(@"I GOT TO WRONG PLACE /:");
