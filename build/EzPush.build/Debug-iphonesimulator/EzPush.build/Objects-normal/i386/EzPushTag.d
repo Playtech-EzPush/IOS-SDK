@@ -1,3 +1,2 @@
-dependencies: \
-  /Users/nilit_d/Documents/Playtech\ Projects/PTWrapper/SocketIO\ /EzPush/EzPush/EzPush/SocketRocket/EzPushTag.m \
-  /Users/nilit_d/Documents/Playtech\ Projects/PTWrapper/SocketIO\ /EzPush/EzPush/EzPush/SocketRocket/EzPushTag.h
+dependencies: /Users/nilit_d/IOS-SDK/EzPush/SocketRocket/EzPushTag.m \
+  /Users/nilit_d/IOS-SDK/EzPush/SocketRocket/EzPushTag.h
