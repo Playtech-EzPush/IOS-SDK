@@ -98,16 +98,24 @@
         if([EzPush enableDebugLogs]){
             NSLog(@"didReceiveRemoteNotification = %@",userInfo);
         }
-        
-        if (userInfo[@"nid"]) {
+        if (anInstance->socketIO.isConnected) {
             NSString *json =  [NSString stringWithFormat:@"{\"qualifier\":\"pt.openapi.push/notificationOpened/1.0\",\"contextId\":\"%@\",\"data\":{\"hwid\":\"%@\",\"applicationId\":\"%@\",\"notificationId\":\"%@\"}}",anInstance.contextId,[anInstance stringFromDeviceToken],anInstance.applicationId,userInfo[@"nid"]];
             
             //opened from a push notification when the app was on background
             [anInstance->socketIO sendMessage:json];
         }
-        
-       
-        
+        else{
+            
+            [anInstance connectSocket];
+            
+            if (userInfo[@"nid"]) {
+                NSString *json =  [NSString stringWithFormat:@"{\"qualifier\":\"pt.openapi.push/notificationOpened/1.0\",\"contextId\":\"%@\",\"data\":{\"hwid\":\"%@\",\"applicationId\":\"%@\",\"notificationId\":\"%@\"}}",anInstance.contextId,[anInstance stringFromDeviceToken],anInstance.applicationId,userInfo[@"nid"]];
+                
+                //opened from a push notification when the app was on background
+                [anInstance->socketIO sendMessage:json];
+            }
+            
+        }
     }
 }
 
