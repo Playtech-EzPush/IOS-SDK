@@ -474,30 +474,34 @@
 -(NSString*) jsonStringFromNSdictionary : (NSArray<EzPushTag *>*)ezpushTags{
     
     
-    NSMutableDictionary *object = [NSMutableDictionary new];
+    if ([EzPush enableDebugLogs]) {
+        NSLog(@"Taglist == %@",ezpushTags);
+    }
+    
+
     NSMutableArray *objectsArray = [NSMutableArray new];
+    
     for (EzPushTag *tag in ezpushTags) {
-        [object setObject:tag.key forKey:@"key"];
-        [object setObject:tag.value forKey:@"value"];
-        [object setObject:tag.type forKey:@"type"];
         
+        NSDictionary *tagObject = @{@"key":tag.key,@"value":tag.value,@"type":tag.type};
+        if ([EzPush enableDebugLogs]) {
+            NSLog(@"Tag KEY == %@",tagObject);
+        }
+        [objectsArray addObject:tagObject];
         
-        
-        [objectsArray addObject:object];
+        if ([EzPush enableDebugLogs]) {
+            NSLog(@"Tags array == %@",objectsArray);
+        }
     }
     
     if (objectsArray.count > 0) {
-        
-        if ([EzPush enableDebugLogs]) {
-            NSLog(@"Taglist == %@",objectsArray);
-        }
         
         NSError * err;
         NSData* jsonData = [NSJSONSerialization dataWithJSONObject:objectsArray options:0 error:&err];
         NSString* jsonString = [[NSString alloc] initWithBytes:[jsonData bytes] length:[jsonData length] encoding:NSUTF8StringEncoding];
         
         if ([EzPush enableDebugLogs]) {
-            NSLog(@"Taglist == %@",jsonString);
+            NSLog(@"Taglist JSON == %@",jsonString);
         }
         return jsonString;
     }

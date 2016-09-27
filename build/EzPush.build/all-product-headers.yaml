@@ -4,33 +4,33 @@
   'roots': [
     {
       'type': 'directory',
-      'name': "/Users/nilit_d/Library/Developer/Xcode/DerivedData/EzPush-aafmuopbgexlbgerxsdgxkeuurpq/Build/Products/Debug-iphonesimulator/EzPush.framework/Headers",
+      'name': "/Users/rebecca_b/Library/Developer/Xcode/DerivedData/EzPush-exfuzdriiyqyinfxfpyjbmkljaml/Build/Products/Release-iphonesimulator/EzPush.framework/Headers",
       'contents': [
         {
           'type': 'file',
           'name': "EzPush-Swift.h",
-          'external-contents': "/Users/nilit_d/Library/Developer/Xcode/DerivedData/EzPush-aafmuopbgexlbgerxsdgxkeuurpq/Build/Products/Debug-iphonesimulator/EzPush.framework/Headers/EzPush-Swift.h"
+          'external-contents': "/Users/rebecca_b/Library/Developer/Xcode/DerivedData/EzPush-exfuzdriiyqyinfxfpyjbmkljaml/Build/Products/Release-iphonesimulator/EzPush.framework/Headers/EzPush-Swift.h"
         },
         {
           'type': 'file',
           'name': "EzPush.h",
-          'external-contents': "/Users/nilit_d/IOS-SDK/EzPush/EzPush.h"
+          'external-contents': "/Users/rebecca_b/IOS-SDK/EzPush/EzPush.h"
         },
         {
           'type': 'file',
           'name': "EzPushTag.h",
-          'external-contents': "/Users/nilit_d/IOS-SDK/EzPush/SocketRocket/EzPushTag.h"
+          'external-contents': "/Users/rebecca_b/IOS-SDK/EzPush/SocketRocket/EzPushTag.h"
         }
       ]
     },
     {
       'type': 'directory',
-      'name': "/Users/nilit_d/Library/Developer/Xcode/DerivedData/EzPush-aafmuopbgexlbgerxsdgxkeuurpq/Build/Products/Debug-iphonesimulator/EzPush.framework/Modules",
+      'name': "/Users/rebecca_b/Library/Developer/Xcode/DerivedData/EzPush-exfuzdriiyqyinfxfpyjbmkljaml/Build/Products/Release-iphonesimulator/EzPush.framework/Modules",
       'contents': [
         {
           'type': 'file',
           'name': "module.modulemap",
-          'external-contents': "/Users/nilit_d/IOS-SDK/build/EzPush.build/Debug-iphonesimulator/EzPush.build/module.modulemap"
+          'external-contents': "/Users/rebecca_b/IOS-SDK/build/EzPush.build/Release-iphonesimulator/EzPush.build/module.modulemap"
         }
       ]
     }
