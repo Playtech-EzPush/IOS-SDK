@@ -23,20 +23,6 @@
 
 /* Begin PBXBuildFile section */
 		EB3811B81D5CB2E600B927F7 /* EzPush.h in Headers */ = {isa = PBXBuildFile; fileRef = EB3811B71D5CB2E600B927F7 /* EzPush.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		EB3811CF1D5CB2FD00B927F7 /* SocketIO.h in Headers */ = {isa = PBXBuildFile; fileRef = EB3811C01D5CB2FD00B927F7 /* SocketIO.h */; };
-		EB3811D01D5CB2FD00B927F7 /* SocketIO.m in Sources */ = {isa = PBXBuildFile; fileRef = EB3811C11D5CB2FD00B927F7 /* SocketIO.m */; };
-		EB3811D11D5CB2FD00B927F7 /* SocketIOJSONSerialization.h in Headers */ = {isa = PBXBuildFile; fileRef = EB3811C21D5CB2FD00B927F7 /* SocketIOJSONSerialization.h */; };
-		EB3811D21D5CB2FD00B927F7 /* SocketIOJSONSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = EB3811C31D5CB2FD00B927F7 /* SocketIOJSONSerialization.m */; };
-		EB3811D31D5CB2FD00B927F7 /* SocketIOPacket.h in Headers */ = {isa = PBXBuildFile; fileRef = EB3811C41D5CB2FD00B927F7 /* SocketIOPacket.h */; };
-		EB3811D41D5CB2FD00B927F7 /* SocketIOPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = EB3811C51D5CB2FD00B927F7 /* SocketIOPacket.m */; };
-		EB3811D51D5CB2FD00B927F7 /* SocketIOTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = EB3811C61D5CB2FD00B927F7 /* SocketIOTransport.h */; };
-		EB3811D61D5CB2FD00B927F7 /* SocketIOTransportWebsocket.h in Headers */ = {isa = PBXBuildFile; fileRef = EB3811C71D5CB2FD00B927F7 /* SocketIOTransportWebsocket.h */; };
-		EB3811D71D5CB2FD00B927F7 /* SocketIOTransportWebsocket.m in Sources */ = {isa = PBXBuildFile; fileRef = EB3811C81D5CB2FD00B927F7 /* SocketIOTransportWebsocket.m */; };
-		EB3811D81D5CB2FD00B927F7 /* SocketIOTransportXHR.h in Headers */ = {isa = PBXBuildFile; fileRef = EB3811C91D5CB2FD00B927F7 /* SocketIOTransportXHR.h */; };
-		EB3811D91D5CB2FD00B927F7 /* SocketIOTransportXHR.m in Sources */ = {isa = PBXBuildFile; fileRef = EB3811CA1D5CB2FD00B927F7 /* SocketIOTransportXHR.m */; };
-		EB3811DA1D5CB2FD00B927F7 /* SocketRocket-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = EB3811CC1D5CB2FD00B927F7 /* SocketRocket-Prefix.pch */; };
-		EB3811DB1D5CB2FD00B927F7 /* SRWebSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = EB3811CD1D5CB2FD00B927F7 /* SRWebSocket.h */; };
-		EB3811DC1D5CB2FD00B927F7 /* SRWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = EB3811CE1D5CB2FD00B927F7 /* SRWebSocket.m */; };
 		EB3811DE1D5CB32600B927F7 /* EzPush.m in Sources */ = {isa = PBXBuildFile; fileRef = EB3811DD1D5CB32600B927F7 /* EzPush.m */; };
 		EB3811E11D5CB32E00B927F7 /* EzPushTag.h in Headers */ = {isa = PBXBuildFile; fileRef = EB3811DF1D5CB32E00B927F7 /* EzPushTag.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EB3811E21D5CB32E00B927F7 /* EzPushTag.m in Sources */ = {isa = PBXBuildFile; fileRef = EB3811E01D5CB32E00B927F7 /* EzPushTag.m */; };
@@ -57,20 +43,6 @@
 		EB3811B41D5CB2E600B927F7 /* EzPush.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = EzPush.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB3811B71D5CB2E600B927F7 /* EzPush.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EzPush.h; sourceTree = "<group>"; };
 		EB3811B91D5CB2E600B927F7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EB3811C01D5CB2FD00B927F7 /* SocketIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketIO.h; sourceTree = "<group>"; };
-		EB3811C11D5CB2FD00B927F7 /* SocketIO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketIO.m; sourceTree = "<group>"; };
-		EB3811C21D5CB2FD00B927F7 /* SocketIOJSONSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketIOJSONSerialization.h; sourceTree = "<group>"; };
-		EB3811C31D5CB2FD00B927F7 /* SocketIOJSONSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketIOJSONSerialization.m; sourceTree = "<group>"; };
-		EB3811C41D5CB2FD00B927F7 /* SocketIOPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketIOPacket.h; sourceTree = "<group>"; };
-		EB3811C51D5CB2FD00B927F7 /* SocketIOPacket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketIOPacket.m; sourceTree = "<group>"; };
-		EB3811C61D5CB2FD00B927F7 /* SocketIOTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketIOTransport.h; sourceTree = "<group>"; };
-		EB3811C71D5CB2FD00B927F7 /* SocketIOTransportWebsocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketIOTransportWebsocket.h; sourceTree = "<group>"; };
-		EB3811C81D5CB2FD00B927F7 /* SocketIOTransportWebsocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketIOTransportWebsocket.m; sourceTree = "<group>"; };
-		EB3811C91D5CB2FD00B927F7 /* SocketIOTransportXHR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketIOTransportXHR.h; sourceTree = "<group>"; };
-		EB3811CA1D5CB2FD00B927F7 /* SocketIOTransportXHR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketIOTransportXHR.m; sourceTree = "<group>"; };
-		EB3811CC1D5CB2FD00B927F7 /* SocketRocket-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SocketRocket-Prefix.pch"; sourceTree = "<group>"; };
-		EB3811CD1D5CB2FD00B927F7 /* SRWebSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRWebSocket.h; sourceTree = "<group>"; };
-		EB3811CE1D5CB2FD00B927F7 /* SRWebSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRWebSocket.m; sourceTree = "<group>"; };
 		EB3811DD1D5CB32600B927F7 /* EzPush.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EzPush.m; sourceTree = "<group>"; };
 		EB3811DF1D5CB32E00B927F7 /* EzPushTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EzPushTag.h; path = SocketRocket/EzPushTag.h; sourceTree = "<group>"; };
 		EB3811E01D5CB32E00B927F7 /* EzPushTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EzPushTag.m; path = SocketRocket/EzPushTag.m; sourceTree = "<group>"; };
@@ -109,8 +81,6 @@
 		EB3811B61D5CB2E600B927F7 /* EzPush */ = {
 			isa = PBXGroup;
 			children = (
-				EB3811BF1D5CB2FD00B927F7 /* socket.io */,
-				EB3811CB1D5CB2FD00B927F7 /* SocketRocket */,
 				EB3811B71D5CB2E600B927F7 /* EzPush.h */,
 				EB3811DD1D5CB32600B927F7 /* EzPush.m */,
 				EB3811DF1D5CB32E00B927F7 /* EzPushTag.h */,
@@ -120,34 +90,6 @@
 			path = EzPush;
 			sourceTree = "<group>";
 		};
-		EB3811BF1D5CB2FD00B927F7 /* socket.io */ = {
-			isa = PBXGroup;
-			children = (
-				EB3811C01D5CB2FD00B927F7 /* SocketIO.h */,
-				EB3811C11D5CB2FD00B927F7 /* SocketIO.m */,
-				EB3811C21D5CB2FD00B927F7 /* SocketIOJSONSerialization.h */,
-				EB3811C31D5CB2FD00B927F7 /* SocketIOJSONSerialization.m */,
-				EB3811C41D5CB2FD00B927F7 /* SocketIOPacket.h */,
-				EB3811C51D5CB2FD00B927F7 /* SocketIOPacket.m */,
-				EB3811C61D5CB2FD00B927F7 /* SocketIOTransport.h */,
-				EB3811C71D5CB2FD00B927F7 /* SocketIOTransportWebsocket.h */,
-				EB3811C81D5CB2FD00B927F7 /* SocketIOTransportWebsocket.m */,
-				EB3811C91D5CB2FD00B927F7 /* SocketIOTransportXHR.h */,
-				EB3811CA1D5CB2FD00B927F7 /* SocketIOTransportXHR.m */,
-			);
-			path = socket.io;
-			sourceTree = "<group>";
-		};
-		EB3811CB1D5CB2FD00B927F7 /* SocketRocket */ = {
-			isa = PBXGroup;
-			children = (
-				EB3811CC1D5CB2FD00B927F7 /* SocketRocket-Prefix.pch */,
-				EB3811CD1D5CB2FD00B927F7 /* SRWebSocket.h */,
-				EB3811CE1D5CB2FD00B927F7 /* SRWebSocket.m */,
-			);
-			path = SocketRocket;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -155,16 +97,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EB3811DB1D5CB2FD00B927F7 /* SRWebSocket.h in Headers */,
 				EB3811B81D5CB2E600B927F7 /* EzPush.h in Headers */,
 				EB3811E11D5CB32E00B927F7 /* EzPushTag.h in Headers */,
-				EB3811D81D5CB2FD00B927F7 /* SocketIOTransportXHR.h in Headers */,
-				EB3811CF1D5CB2FD00B927F7 /* SocketIO.h in Headers */,
-				EB3811D11D5CB2FD00B927F7 /* SocketIOJSONSerialization.h in Headers */,
-				EB3811DA1D5CB2FD00B927F7 /* SocketRocket-Prefix.pch in Headers */,
-				EB3811D61D5CB2FD00B927F7 /* SocketIOTransportWebsocket.h in Headers */,
-				EB3811D51D5CB2FD00B927F7 /* SocketIOTransport.h in Headers */,
-				EB3811D31D5CB2FD00B927F7 /* SocketIOPacket.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,14 +189,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EB3811DC1D5CB2FD00B927F7 /* SRWebSocket.m in Sources */,
 				EB3811E21D5CB32E00B927F7 /* EzPushTag.m in Sources */,
-				EB3811D71D5CB2FD00B927F7 /* SocketIOTransportWebsocket.m in Sources */,
-				EB3811D01D5CB2FD00B927F7 /* SocketIO.m in Sources */,
-				EB3811D91D5CB2FD00B927F7 /* SocketIOTransportXHR.m in Sources */,
 				EB3811DE1D5CB32600B927F7 /* EzPush.m in Sources */,
-				EB3811D21D5CB2FD00B927F7 /* SocketIOJSONSerialization.m in Sources */,
-				EB3811D41D5CB2FD00B927F7 /* SocketIOPacket.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

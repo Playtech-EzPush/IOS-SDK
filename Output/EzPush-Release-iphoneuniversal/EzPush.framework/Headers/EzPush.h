@@ -76,6 +76,13 @@ FOUNDATION_EXPORT const unsigned char EzPushVersionString[];
 
 + (void)updateTags : (NSArray<EzPushTag *>*)tags;
 
+/**
+ * init EzPush SDK
+ * Call it from within didFinishLaunchingWithOptions
+ * @param url ezpush url entry point
+ */
++ (void)entryPointURL:(NSString*)url;
+
 
 /**
  * enable debug logs with EzPush service

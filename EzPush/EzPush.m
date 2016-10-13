@@ -19,6 +19,7 @@
 @property(assign)            BOOL           enableLog;
 
 @property (nonatomic,copy)   NSString       *applicationId;
+@property (nonatomic,copy)   NSString       *EzPush_URL;
 @property (nonatomic,strong) NSDictionary   *launchOptions;
 @end
 
@@ -32,7 +33,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedMyManager = [[self alloc] init];
-        NSLog(@"EzPush init once.");
+        NSLog(@"EP:SDK ACTIVE");
     });
     return sharedMyManager;
 }
@@ -58,8 +59,8 @@
 }
 
 - (void)didBecomeActiveNotification{
-    NSLog(@"Ezpush UIApplicationDidBecomeActiveNotification");
-    //[socketIO disconnectForced];
+    NSLog(@"EP:didBecomeActiveNotification");
+
 }
 + (void)didAcceptLocalNotification:(UILocalNotification*)notification application:(UIApplication*)application
 {
@@ -74,13 +75,23 @@
         NSDictionary *params = @{@"qualifier": @"pt.openapi.push.devreg/notificationOpened/1.0",
                                  @"data":@{@"hwid":@"hwid1", @"applicationId": anInstance.applicationId, @"notificationId":userInfo[@"nid"]}};
         if([EzPush enableDebugLogs])
-            NSLog(@"PARAMS : %@",params);
+            NSLog(@"EZ:didReceiveRemoteNotification : %@",params);
         
         [anInstance requestWithParams:params];
 
     }
 }
-
++ (void)entryPointURL:(NSString*)url{
+    EzPush *anInstance = [EzPush sharedManager];
+    
+    if (url == nil || url.length == 0) {
+        anInstance.EzPush_URL = API_BASE_URL;
+    }
+    anInstance.EzPush_URL = url;
+    
+    if([EzPush enableDebugLogs])
+        NSLog(@"EP:ENTRY POINT URL : %@",anInstance.EzPush_URL);
+}
 + (void)initWithLaunchOptions:(NSDictionary*)launchOptions appId:(NSString*)appId{
     
     EzPush *anInstance = [EzPush sharedManager];
@@ -124,7 +135,7 @@
                                        @"timeZone":@0,
                                        @"userIdentity":@"ul"}};
     if([EzPush enableDebugLogs])
-        NSLog(@"PARAMS : %@",params);
+        NSLog(@"EP:registerDevice : %@",params);
     
     [anInstance requestWithParams:params];
 
@@ -142,7 +153,7 @@
                                        @"userIdentity":username
                                        }};
     if([EzPush enableDebugLogs])
-        NSLog(@"PARAMS : %@",params);
+        NSLog(@"EP:registerUserName : %@",params);
     
     [anInstance requestWithParams:params];
 
@@ -160,7 +171,7 @@
                              @"data":@{@"deviceRegistrationId":@{@"hwid":@"hwid1", @"applicationId": anInstance.applicationId},
                                        @"tags":jsonTags}};
     if([EzPush enableDebugLogs])
-        NSLog(@"PARAMS : %@",params);
+        NSLog(@"EP:updateTags : %@",params);
     
     [anInstance requestWithParams:params];
 
@@ -174,7 +185,7 @@
     NSDictionary *params = @{@"qualifier": @"pt.openapi.push.devreg/updateLocation",
                              @"data":@{@"hwid":@"hwid1", @"longitude": [NSNumber numberWithFloat:longitude],@"latitude": [NSNumber numberWithFloat:latitude]}};
     if([EzPush enableDebugLogs])
-        NSLog(@"PARAMS : %@",params);
+        NSLog(@"EP:setGeoLocationLatitude : %@",params);
     
     [anInstance requestWithParams:params];
 
@@ -185,7 +196,7 @@
     
     
     if ([EzPush enableDebugLogs]) {
-        NSLog(@"Taglist == %@",ezpushTags);
+        NSLog(@"EP:Taglist == %@",ezpushTags);
     }
     
 
@@ -211,7 +222,7 @@
         NSString* jsonString = [[NSString alloc] initWithBytes:[jsonData bytes] length:[jsonData length] encoding:NSUTF8StringEncoding];
         
         if ([EzPush enableDebugLogs]) {
-            NSLog(@"Taglist JSON == %@",jsonString);
+            NSLog(@"EP:Taglist JSON == %@",jsonString);
         }
         return jsonString;
     }
@@ -244,7 +255,7 @@
 
 - (void)requestWithParams : (NSDictionary*)params{
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@",API_BASE_URL]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@",_EzPush_URL]];
     
     
     // Convert the dictionary into JSON data.
@@ -269,9 +280,9 @@
                                            if (!error)
                                            {
                                                if([EzPush enableDebugLogs]){
-                                                   NSLog(@"Status code: %li", (long)((NSHTTPURLResponse *)response).statusCode);
+                                                   NSLog(@"EP:Status code: %li", (long)((NSHTTPURLResponse *)response).statusCode);
                                                    NSString *__response = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
-                                                   NSLog(@"%@",__response);
+                                                   NSLog(@"EP:SERVER RESPONSE%@",__response);
                                                }
 
                                                
@@ -279,7 +290,8 @@
                                            }
                                            else
                                            {
-                                               NSLog(@"Error: %@", error.localizedDescription);
+                                               if([EzPush enableDebugLogs])
+                                                   NSLog(@"EP: SERVER Error: %@", error.localizedDescription);
                                            }
                                        }];
     
