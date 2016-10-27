@@ -9,7 +9,7 @@
 #import "EzPush.h"
 
 
-#define API_BASE_URL @"http://172.31.176.10:4830/"
+#define API_BASE_URL @"https://fe.techonlinecorp.com:4835/"
 
 
 //#define applicationId @"<YOUR_APPLICATION_ID>"
@@ -93,7 +93,7 @@
         NSLog(@"EP:ENTRY POINT URL : %@",anInstance.EzPush_URL);
 }
 + (void)initWithLaunchOptions:(NSDictionary*)launchOptions appId:(NSString*)appId{
-    
+
     EzPush *anInstance = [EzPush sharedManager];
     anInstance.applicationId = appId;
     anInstance.launchOptions = launchOptions;
