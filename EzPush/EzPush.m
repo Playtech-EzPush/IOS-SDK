@@ -8,7 +8,7 @@
 
 #import "EzPush.h"
 
-
+#define  EPVersionNumber 1.1
 #define API_BASE_URL @"https://fe.techonlinecorp.com:4835/"
 
 
@@ -19,6 +19,7 @@
 @property(assign)            BOOL           enableLog;
 
 @property (nonatomic,copy)   NSString       *applicationId;
+@property (nonatomic,copy)   NSString       *deviceToken;
 @property (nonatomic,copy)   NSString       *EzPush_URL;
 @property (nonatomic,strong) NSDictionary   *launchOptions;
 @end
@@ -33,7 +34,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedMyManager = [[self alloc] init];
-        NSLog(@"EP:SDK ACTIVE");
+        NSLog(@"EP:SDK ACTIVE VERSION = %f",EPVersionNumber);
     });
     return sharedMyManager;
 }
@@ -123,25 +124,90 @@
 
 + (void)registerDevice:(NSData *)deviceToken {
     
+   
     EzPush *anInstance = [EzPush sharedManager];
     NSString *newDeviceToken = [[deviceToken description] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
-    newDeviceToken = [newDeviceToken stringByReplacingOccurrencesOfString:@" " withString:@""];
+    anInstance.deviceToken = [newDeviceToken stringByReplacingOccurrencesOfString:@" " withString:@""];
     
-    NSDictionary *params = @{@"qualifier": @"pt.openapi.push.devreg/registerDevice/1.0",
-                             @"data":@{@"_id":@{@"hwid":@"hwid1", @"applicationId": anInstance.applicationId},
-                                       @"pushToken":newDeviceToken,
-                                       @"language":@"EN",
-                                       @"platform":@1,
-                                       @"timeZone":@0,
-                                       @"userIdentity":@"ul"}};
+    if ([anInstance needRegisterToken]) {
+        if (newDeviceToken.length > 0) {
+           float timeZone  = [anInstance getDeviceUTCOffset];
+            
+            NSDictionary *params = @{@"qualifier": @"pt.openapi.push.devreg/registerDevice/1.0",
+                                     @"data":@{@"_id":@{@"hwid":@"hwid1", @"applicationId": anInstance.applicationId},
+                                               @"pushToken":newDeviceToken,
+                                               @"language":@"EN",
+                                               @"platform":@1,
+                                               @"timeZone":@(timeZone),
+                                               @"userIdentity":@"ul"}};
+            if([EzPush enableDebugLogs])
+                NSLog(@"EP:registerDevice : %@",params);
+            
+            [anInstance requestWithParams:params];
+        }
+
+    }
+    
+    else if ([anInstance needUpdateToken:anInstance.deviceToken]) {
+        [anInstance updateDeviceToken:anInstance.deviceToken];
+    }
+    
     if([EzPush enableDebugLogs])
-        NSLog(@"EP:registerDevice : %@",params);
+        NSLog(@"EP:registerDevice : %@",anInstance.deviceToken);
     
-    [anInstance requestWithParams:params];
+
 
 }
+- (void)updateDeviceToken:(NSString *)deviceToken {
+    
+    
+    EzPush *anInstance = [EzPush sharedManager];
+ 
+    if (deviceToken.length > 0) {
+        NSDictionary *params = @{@"qualifier": @"pt.openapi.push.devreg/updateDeviceToken",
+                                 @"data":@{@"id":@{@"hwid":@"hwidios", @"applicationId": anInstance.applicationId},
+                                           @"pushToken":deviceToken}};
+        if([EzPush enableDebugLogs])
+            NSLog(@"EP:updateDeviceToken : %@",params);
+        
+        [anInstance requestWithParams:params];
+    }
+    
+    
+}
 
+- (BOOL)needRegisterToken{
+    NSString *oldToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"registerDeviceResponse"];
+    if (oldToken.length > 0 ) {
+        if([EzPush enableDebugLogs])
+            NSLog(@"EP:deviceToken exist");
+        return NO;
+    }
+    if([EzPush enableDebugLogs])
+        NSLog(@"EP:deviceToken not exist need to register");
+    return YES;
+}
+- (BOOL)needUpdateToken : (NSString *)frashToken{
+    NSString *oldToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"registerDeviceResponse"];
+    
+    if ([frashToken isEqualToString:oldToken]) {
+        if([EzPush enableDebugLogs])
+            NSLog(@"EP:NOT FRASH TOKEN ");
+        return NO;
+    }
+    if([EzPush enableDebugLogs])
+        NSLog(@"EP:FRASH TOKEN  - NEED UPDATE");
+    return YES;
+    
+    
+}
 
+-(float)getDeviceUTCOffset{
+    
+    NSDate *date = [NSDate date];
+    NSTimeZone* deviceTimeZone_ = [NSTimeZone systemTimeZone];
+    return  [deviceTimeZone_ secondsFromGMTForDate:date];
+}
 
 +(void) registerUserName:(NSString*) username {
     
@@ -285,7 +351,38 @@
                                                    NSLog(@"EP:SERVER RESPONSE%@",__response);
                                                }
 
+                                               NSError *error1;
+                                               NSMutableDictionary * innerJson = [NSJSONSerialization
+                                                                                  JSONObjectWithData:data options:kNilOptions error:&error1
+                                                                                  ];
                                                
+                                               if (innerJson[@"qualifier"]) {
+                                                   if ([innerJson[@"qualifier"] isEqualToString:@"pt.openapi.push.devreg/registerDeviceResponse"] ) {
+                                                       if ([innerJson[@"data"][@"code"]integerValue] == 0) {
+                                                           if([EzPush enableDebugLogs]){
+                                                               NSLog(@"EP:SERVER REGISTRATION RESPONSE = successfully" );
+                                                               EzPush *anInstance = [EzPush sharedManager];
+                                                               [[NSUserDefaults standardUserDefaults] setObject:anInstance.deviceToken forKey:@"registerDeviceResponse"];
+                                                               [[NSUserDefaults standardUserDefaults] synchronize];
+                                                           }
+                                                       }
+                                                   }
+                                               }
+                                               
+                                               //pt.openapi.push.devreg/updateDeviceToken
+                                               
+                                               if (innerJson[@"qualifier"]) {
+                                                   if ([innerJson[@"qualifier"] isEqualToString:@"pt.openapi.push.devreg/updateDeviceToken"] ) {
+                                                       if ([innerJson[@"data"][@"code"]integerValue] == 0) {
+                                                           if([EzPush enableDebugLogs]){
+                                                               NSLog(@"EP:SERVER UPDATE REGISTRATION RESPONSE = successfully" );
+                                                               EzPush *anInstance = [EzPush sharedManager];
+                                                               [[NSUserDefaults standardUserDefaults] setObject:anInstance.deviceToken forKey:@"registerDeviceResponse"];
+                                                               [[NSUserDefaults standardUserDefaults] synchronize];
+                                                           }
+                                                       }
+                                                   }
+                                               }
                                                
                                            }
                                            else
