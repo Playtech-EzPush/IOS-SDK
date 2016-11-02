@@ -19,6 +19,7 @@
 @property(assign)            BOOL           enableLog;
 
 @property (nonatomic,copy)   NSString       *applicationId;
+@property (nonatomic,copy)   NSString       *hwid;
 @property (nonatomic,copy)   NSString       *deviceToken;
 @property (nonatomic,copy)   NSString       *EzPush_URL;
 @property (nonatomic,strong) NSDictionary   *launchOptions;
@@ -58,7 +59,21 @@
                                                     name:UIApplicationDidBecomeActiveNotification
                                                   object:nil];
 }
-
+-(NSString *)getUniqueDeviceIdentifierAsString
+{
+    
+    NSString *appName= [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
+    
+    NSString *strApplicationUUID = [[NSUserDefaults standardUserDefaults] objectForKey:@"vXxyY"];
+    if (strApplicationUUID == nil)
+    {
+        strApplicationUUID  = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+        [[NSUserDefaults standardUserDefaults] setObject:appName forKey:@"vXxyY"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    
+    return strApplicationUUID;
+}
 - (void)didBecomeActiveNotification{
     NSLog(@"EP:didBecomeActiveNotification");
 
@@ -74,7 +89,7 @@
         EzPush *anInstance = [EzPush sharedManager];
         
         NSDictionary *params = @{@"qualifier": @"pt.openapi.push.devreg/notificationOpened/1.0",
-                                 @"data":@{@"hwid":@"hwid1", @"applicationId": anInstance.applicationId, @"notificationId":userInfo[@"nid"]}};
+                                 @"data":@{@"hwid":[anInstance getUniqueDeviceIdentifierAsString], @"applicationId": anInstance.applicationId, @"notificationId":userInfo[@"nid"]}};
         if([EzPush enableDebugLogs])
             NSLog(@"EZ:didReceiveRemoteNotification : %@",params);
         
@@ -134,8 +149,8 @@
            float timeZone  = [anInstance getDeviceUTCOffset];
             
             NSDictionary *params = @{@"qualifier": @"pt.openapi.push.devreg/registerDevice/1.0",
-                                     @"data":@{@"_id":@{@"hwid":@"hwid1", @"applicationId": anInstance.applicationId},
-                                               @"pushToken":newDeviceToken,
+                                     @"data":@{@"_id":@{@"hwid":[anInstance getUniqueDeviceIdentifierAsString], @"applicationId": anInstance.applicationId},
+                                               @"pushToken":anInstance.deviceToken,
                                                @"language":@"EN",
                                                @"platform":@1,
                                                @"timeZone":@(timeZone),
@@ -165,7 +180,7 @@
  
     if (deviceToken.length > 0) {
         NSDictionary *params = @{@"qualifier": @"pt.openapi.push.devreg/updateDeviceToken",
-                                 @"data":@{@"id":@{@"hwid":@"hwidios", @"applicationId": anInstance.applicationId},
+                                 @"data":@{@"id":@{@"hwid":[anInstance getUniqueDeviceIdentifierAsString], @"applicationId": anInstance.applicationId},
                                            @"pushToken":deviceToken}};
         if([EzPush enableDebugLogs])
             NSLog(@"EP:updateDeviceToken : %@",params);
@@ -215,7 +230,7 @@
     EzPush *anInstance = [EzPush sharedManager];
     
     NSDictionary *params = @{@"qualifier": @"pt.openapi.push.devreg/updateUserId",
-                             @"data":@{@"deviceRegistrationId":@{@"hwid":@"hwid1", @"applicationId": anInstance.applicationId},
+                             @"data":@{@"deviceRegistrationId":@{@"hwid":[anInstance getUniqueDeviceIdentifierAsString], @"applicationId": anInstance.applicationId},
                                        @"userIdentity":username
                                        }};
     if([EzPush enableDebugLogs])
@@ -234,7 +249,7 @@
      NSString *jsonTags = [anInstance jsonStringFromNSdictionary:tags];
     
     NSDictionary *params = @{@"qualifier": @"pt.openapi.push.devreg/updateTags",
-                             @"data":@{@"deviceRegistrationId":@{@"hwid":@"hwid1", @"applicationId": anInstance.applicationId},
+                             @"data":@{@"deviceRegistrationId":@{@"hwid":[anInstance getUniqueDeviceIdentifierAsString], @"applicationId": anInstance.applicationId},
                                        @"tags":jsonTags}};
     if([EzPush enableDebugLogs])
         NSLog(@"EP:updateTags : %@",params);
@@ -249,7 +264,7 @@
     EzPush *anInstance = [EzPush sharedManager];
 
     NSDictionary *params = @{@"qualifier": @"pt.openapi.push.devreg/updateLocation",
-                             @"data":@{@"hwid":@"hwid1", @"longitude": [NSNumber numberWithFloat:longitude],@"latitude": [NSNumber numberWithFloat:latitude]}};
+                             @"data":@{@"hwid":[anInstance getUniqueDeviceIdentifierAsString], @"longitude": [NSNumber numberWithFloat:longitude],@"latitude": [NSNumber numberWithFloat:latitude]}};
     if([EzPush enableDebugLogs])
         NSLog(@"EP:setGeoLocationLatitude : %@",params);
     
