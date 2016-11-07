@@ -153,8 +153,8 @@
                                                @"pushToken":anInstance.deviceToken,
                                                @"language":@"EN",
                                                @"platform":@1,
-                                               @"timeZone":@(timeZone),
-                                               @"userIdentity":@"ul"}};
+                                               @"timeZone":@(timeZone)
+                                               }};
             if([EzPush enableDebugLogs])
                 NSLog(@"EP:registerDevice : %@",params);
             
