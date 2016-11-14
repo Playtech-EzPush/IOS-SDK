@@ -8,7 +8,7 @@
 
 #import "EzPush.h"
 
-#define  EPVersionNumber 1.1
+#define  EPVersionNumber 1.2
 #define API_BASE_URL @"https://fe.techonlinecorp.com:4835/"
 
 
@@ -62,13 +62,13 @@
 -(NSString *)getUniqueDeviceIdentifierAsString
 {
     
-    NSString *appName= [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
+    //NSString *appName= [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
     
     NSString *strApplicationUUID = [[NSUserDefaults standardUserDefaults] objectForKey:@"vXxyY"];
     if (strApplicationUUID == nil)
     {
         strApplicationUUID  = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-        [[NSUserDefaults standardUserDefaults] setObject:appName forKey:@"vXxyY"];
+        [[NSUserDefaults standardUserDefaults] setObject:strApplicationUUID forKey:@"vXxyY"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     
