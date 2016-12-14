@@ -250,7 +250,7 @@
     
     
     EzPush *anInstance = [EzPush sharedManager];
-     NSString *jsonTags = [anInstance jsonStringFromNSdictionary:tags];
+    NSArray *jsonTags = [anInstance jsonStringFromNSdictionary:tags];
     
     NSDictionary *params = @{@"qualifier": @"pt.openapi.push.devreg/updateTags",
                              @"data":@{@"deviceRegistrationId":@{@"hwid":[anInstance getUniqueDeviceIdentifierAsString], @"applicationId": anInstance.applicationId},
@@ -277,7 +277,7 @@
 }
 
 
--(NSString*) jsonStringFromNSdictionary : (NSArray<EzPushTag *>*)ezpushTags{
+-(NSArray*) jsonStringFromNSdictionary : (NSArray<EzPushTag *>*)ezpushTags{
     
     
     if ([EzPush enableDebugLogs]) {
@@ -290,28 +290,30 @@
     for (EzPushTag *tag in ezpushTags) {
         
         NSDictionary *tagObject = @{@"key":tag.key,@"value":tag.value,@"type":tag.type};
-        if ([EzPush enableDebugLogs]) {
-            NSLog(@"Tag KEY == %@",tagObject);
-        }
+//        if ([EzPush enableDebugLogs]) {
+//            NSLog(@"Tag KEY == %@",tagObject);
+//        }
         [objectsArray addObject:tagObject];
         
-        if ([EzPush enableDebugLogs]) {
-            NSLog(@"Tags array == %@",objectsArray);
-        }
+//        if ([EzPush enableDebugLogs]) {
+//            NSLog(@"Tags array == %@",objectsArray);
+//        }
     }
     
     if (objectsArray.count > 0) {
         
+        /*
         NSError * err;
         NSData* jsonData = [NSJSONSerialization dataWithJSONObject:objectsArray options:0 error:&err];
-        NSString* jsonString = [[NSString alloc] initWithBytes:[jsonData bytes] length:[jsonData length] encoding:NSUTF8StringEncoding];
+        NSString* jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
         
         if ([EzPush enableDebugLogs]) {
             NSLog(@"EP:Taglist JSON == %@",jsonString);
         }
-        return jsonString;
+        return jsonString;*/
+        return objectsArray;
     }
-    return @"";
+    return nil;
 }
 
 - (NSString*)DictionaryToJSONString : (NSDictionary*)jsonDict{
@@ -355,6 +357,10 @@
     request.HTTPMethod              = @"POST";
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     request.HTTPBody                = JSONData;
+    
+    if([EzPush enableDebugLogs]){
+        NSLog(@"EP:HTTPBody = %@",JSONData);
+    }
     
     // Create a task.
     NSURLSessionDataTask *task      = [[NSURLSession sharedSession] dataTaskWithRequest:request
