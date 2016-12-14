@@ -8,7 +8,7 @@
 
 #import "EzPush.h"
 
-#define  EPVersionNumber 1.1
+#define  EPVersionNumber 1.2
 #define API_BASE_URL @"https://fe.techonlinecorp.com:4835/"
 
 
@@ -64,14 +64,18 @@
     
     NSString *appName= [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
     
+    if([EzPush enableDebugLogs])
+        NSLog(@"EP:%@",appName);
+    
     NSString *strApplicationUUID = [[NSUserDefaults standardUserDefaults] objectForKey:@"vXxyY"];
     if (strApplicationUUID == nil)
     {
         strApplicationUUID  = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-        [[NSUserDefaults standardUserDefaults] setObject:appName forKey:@"vXxyY"];
+        [[NSUserDefaults standardUserDefaults] setObject:strApplicationUUID forKey:@"vXxyY"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
-    
+    if([EzPush enableDebugLogs])
+        NSLog(@"EP HWID:%@",strApplicationUUID);
     return strApplicationUUID;
 }
 - (void)didBecomeActiveNotification{
