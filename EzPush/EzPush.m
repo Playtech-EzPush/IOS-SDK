@@ -62,10 +62,10 @@
 -(NSString *)getUniqueDeviceIdentifierAsString
 {
     
-    NSString *appName= [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
+  //  NSString *appName= [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
     
-    if([EzPush enableDebugLogs])
-        NSLog(@"EP:%@",appName);
+   // if([EzPush enableDebugLogs])
+    //    NSLog(@"EP:%@",appName);
     
     NSString *strApplicationUUID = [[NSUserDefaults standardUserDefaults] objectForKey:@"vXxyY"];
     if (strApplicationUUID == nil)
