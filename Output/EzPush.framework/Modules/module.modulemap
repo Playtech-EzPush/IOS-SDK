@@ -1,0 +1,6 @@
+framework module EzPush {
+  umbrella header "EzPush.h"
+
+  export *
+  module * { export * }
+}
