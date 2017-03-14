@@ -290,14 +290,14 @@
     for (EzPushTag *tag in ezpushTags) {
         
         NSDictionary *tagObject = @{@"key":tag.key,@"value":tag.value,@"type":tag.type};
-//        if ([EzPush enableDebugLogs]) {
-//            NSLog(@"Tag KEY == %@",tagObject);
-//        }
+        if ([EzPush enableDebugLogs]) {
+            NSLog(@"Tag KEY == %@",tagObject);
+        }
         [objectsArray addObject:tagObject];
         
-//        if ([EzPush enableDebugLogs]) {
-//            NSLog(@"Tags array == %@",objectsArray);
-//        }
+        if ([EzPush enableDebugLogs]) {
+            NSLog(@"Tags array == %@",objectsArray);
+        }
     }
     
     if (objectsArray.count > 0) {
