@@ -90,7 +90,7 @@
 {
     EzPush *anInstance = [EzPush sharedManager];
     
-    NSDictionary *params = @{@"qualifier": @"pt.openapi.push.devreg/notificationOpened/1.0",
+    NSDictionary *params = @{@"qualifier": @"pt.openapi.push/notificationOpened/1.0",
                              @"data":@{@"hwid":[anInstance getUniqueDeviceIdentifierAsString], @"applicationId": anInstance.applicationId, @"notificationId":userInfo[@"nid"]}};
     if([EzPush enableDebugLogs])
         NSLog(@"EZ:didReceiveRemoteNotification : %@",params);
