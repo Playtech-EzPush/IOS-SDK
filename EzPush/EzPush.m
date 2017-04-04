@@ -88,18 +88,14 @@
 }
 + (void)EzPushApplication:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
-    if ( application.applicationState == UIApplicationStateInactive || application.applicationState == UIApplicationStateBackground  )
-    {
-        EzPush *anInstance = [EzPush sharedManager];
-        
-        NSDictionary *params = @{@"qualifier": @"pt.openapi.push.devreg/notificationOpened/1.0",
-                                 @"data":@{@"hwid":[anInstance getUniqueDeviceIdentifierAsString], @"applicationId": anInstance.applicationId, @"notificationId":userInfo[@"nid"]}};
-        if([EzPush enableDebugLogs])
-            NSLog(@"EZ:didReceiveRemoteNotification : %@",params);
-        
-        [anInstance requestWithParams:params];
-
-    }
+    EzPush *anInstance = [EzPush sharedManager];
+    
+    NSDictionary *params = @{@"qualifier": @"pt.openapi.push.devreg/notificationOpened/1.0",
+                             @"data":@{@"hwid":[anInstance getUniqueDeviceIdentifierAsString], @"applicationId": anInstance.applicationId, @"notificationId":userInfo[@"nid"]}};
+    if([EzPush enableDebugLogs])
+        NSLog(@"EZ:didReceiveRemoteNotification : %@",params);
+    
+    [anInstance requestWithParams:params];
 }
 + (void)entryPointURL:(NSString*)url{
     EzPush *anInstance = [EzPush sharedManager];
